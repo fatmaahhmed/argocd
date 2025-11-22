@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: 
+          image: us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:$12
           ports:
             - containerPort: 3000
 ---

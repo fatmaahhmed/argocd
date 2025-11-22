@@ -2,9 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: client-deployment
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: my-client=us-central1-docker.pkg.dev/YOUR_PROJECT_ID/my-repo/simple-client
-    argocd-image-updater.argoproj.io/my-client.update-strategy: latest
 spec:
   replicas: 1
   selector:
@@ -17,7 +14,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: us-central1-docker.pkg.dev/YOUR_PROJECT_ID/my-repo/simple-client:latest
+        image: us-central1-docker.pkg.dev/YOUR_PROJECT_ID/my-repo/my-client:latest
         ports:
         - containerPort: 80
 ---

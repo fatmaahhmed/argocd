@@ -2,9 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-deployment
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: my-api=us-central1-docker.pkg.dev/YOUR_PROJECT_ID/my-repo/simple-api
-    argocd-image-updater.argoproj.io/my-api.update-strategy: latest
 spec:
   replicas: 1
   selector:
@@ -17,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/simple-api:latest
+          image: us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-api:latest
           ports:
             - containerPort: 3000
 ---

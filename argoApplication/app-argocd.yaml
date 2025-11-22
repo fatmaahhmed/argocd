@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/fatmaahhmed/argocd.git
     targetRevision: main          
-    path: argoFiles               
+    path: k8s-manifests
   destination:
     server: https://kubernetes.default.svc
     namespace: default           

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-client:740e33d02ff3077ad6ea04c2e8e07325da71c0f9
+        image: us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-client:97474b9786309fa155083c65b7312a23c94dcda7
         ports:
         - containerPort: 80
 ---

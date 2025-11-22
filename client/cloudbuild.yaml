@@ -1,9 +1,7 @@
-# 1. إعدادات الـ Logging (دي اللي هتحل المشكلة)
 options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # 2. Build Image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-client:$COMMIT_SHA', '.']
 

@@ -32,8 +32,16 @@ steps:
       # (تأكد من استبدال الرابط برابط الـ Repo بتاعك)
       git clone git@github.com:fatmaahhmed/argocd.git
       
-      cd argocd 
-      cd k8s-manifests
+      cd argocd
+      if [ -f "k8s-manifests/client.yaml" ]; then
+        sed -i "s|image: .*|image: us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-client:$COMMIT_SHA|g" k8s-manifests/client.yaml
+      else
+        echo "Error: Could not find api.yaml file"
+        find . -name "*.yaml" -type f
+        exit 1
+      fi
+      
+
 
       # هـ. تعديل الصورة (sed)
       # تأكد إن اسم ملف الـ deployment صح (ممكن يكون deployment.yaml أو values.yaml)

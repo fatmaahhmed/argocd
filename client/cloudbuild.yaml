@@ -1,17 +1,58 @@
-steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '-t', 'us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-client:$COMMIT_SHA:$COMMIT_SHA',
-      '-t', 'us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-client:$COMMIT_SHA:latest',
-      '.'
-    ]
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'push',
-      'us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-client:$COMMIT_SHA'
-    ]
-images:
-  - 'us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-client:$COMMIT_SHA:$COMMIT_SHA'
-  - 'us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-client:$COMMIT_SHA:latest'
+# 1. إعدادات الـ Logging (دي اللي هتحل المشكلة)
+options:
+  logging: CLOUD_LOGGING_ONLY
 
+steps:
+  # 2. Build Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:$COMMIT_SHA', '.']
+
+  # 3. Push Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:$COMMIT_SHA']
+
+  # 4. Update Git Manifest
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      # أ. تجهيز الـ SSH Key
+      mkdir -p /root/.ssh
+      echo "$$SSH_KEY" > /root/.ssh/id_rsa
+      chmod 400 /root/.ssh/id_rsa
+      
+      # ب. إضافة GitHub للـ Known Hosts
+      ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
+
+      # ج. إعدادات الجيت
+      git config --global user.email "cloudbuild@google.com"
+      git config --global user.name "Cloud Build"
+
+      # د. Clone & Update
+      # (تأكد من استبدال الرابط برابط الـ Repo بتاعك)
+      git clone git@github.com:fatmaahhmed/argocd.git
+      
+      cd argocd 
+      cd k8s-manifests
+
+      # هـ. تعديل الصورة (sed)
+      # تأكد إن اسم ملف الـ deployment صح (ممكن يكون deployment.yaml أو values.yaml)
+      sed -i "s|image: .*|image: us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-client:$COMMIT_SHA|g" argoFiles/deployment.yaml
+
+      # و. الرفع
+      git add .
+      git commit -m "Deploy image $COMMIT_SHA"
+      git push origin main
+
+    # ربط السر بالبيئة
+    secretEnv: ['SSH_KEY']
+
+# تعريف الخزنة
+availableSecrets:
+  secretManager:
+  - versionName: projects/$PROJECT_ID/secrets/github-ssh-key/versions/1
+    env: 'SSH_KEY'
+
+# الـ Service Account (مهم جداً يكون المسار صح)
+serviceAccount: 'projects/$PROJECT_ID/serviceAccounts/cloudbuild-sa@$PROJECT_ID.iam.gserviceaccount.com'

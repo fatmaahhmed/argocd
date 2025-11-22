@@ -37,7 +37,7 @@ steps:
 
       # هـ. تعديل الصورة (sed)
       # تأكد إن اسم ملف الـ deployment صح (ممكن يكون deployment.yaml أو values.yaml)
-      sed -i "s|image: .*|image: us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:$COMMIT_SHA|g" argoFiles/deployment.yaml
+      sed -i "s|image: .*|image: us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:$COMMIT_SHA|g" k8s-manifests/api.yaml
 
       # و. الرفع
       git add .

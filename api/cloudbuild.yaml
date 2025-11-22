@@ -1,0 +1,46 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/api:latest'
+      - '.'
+    dir: 'api'
+
+  # Push the Docker image to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/api:latest'
+
+  # Optional: Update Kubernetes manifests for ArgoCD
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        git config user.email "cloudbuild@gcp.com"
+        git config user.name "Cloud Build"
+        sed -i "s|image:.*|image: gcr.io/$PROJECT_ID/api:$SHORT_SHA|g" k8s/deployment.yaml
+        git add k8s/deployment.yaml
+        git commit -m "Update API image to $SHORT_SHA" || echo "No changes to commit"
+        git push origin main
+
+images:
+  - 'gcr.io/$PROJECT_ID/api:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/api:latest'
+
+# options:
+#   logging: CLOUD_LOGGING_ONLY
+#   machineType: 'N1_HIGHCPU_8'
+
+# timeout: '1200s'
+

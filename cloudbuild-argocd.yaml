@@ -1,0 +1,44 @@
+steps:
+  # Authenticate with GKE cluster
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'container'
+      - 'clusters'
+      - 'get-credentials'
+      - '${_CLUSTER_NAME}'
+      - '--zone=${_CLUSTER_ZONE}'
+      - '--project=$PROJECT_ID'
+
+  # Install/Update ArgoCD
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-n'
+      - 'argocd'
+      - '-f'
+      - 'https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml'
+
+  # Wait for ArgoCD to be ready
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'wait'
+      - '--for=condition=ready'
+      - 'pod'
+      - '-l'
+      - 'app.kubernetes.io/name=argocd-server'
+      - '-n'
+      - 'argocd'
+      - '--timeout=300s'
+
+  # Apply ArgoCD Application
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-f'
+      - 'argoApplication/app-argocd.yaml'
+
+substitutions:
+  _CLUSTER_NAME: 'my-gke-cluster'
+  _CLUSTER_ZONE: 'us-central1-a'
+
+timeout: '1200s'

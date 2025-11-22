@@ -3,6 +3,7 @@ options:
 
 steps:
   - name: 'gcr.io/cloud-builders/docker'
+    dir: './client'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/my-client:$COMMIT_SHA', '.']
 
   # 3. Push Image

@@ -1,21 +1,21 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: my-simple-nginx-app
-#   namespace: argocd
-#   # ملحوظة: بنضيف label عشان المدير يعرف عياله
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-# spec:
-#   project: default
-#   source:
-#     repoURL: https://github.com/fatmaahhmed/argocd.git
-#     targetRevision: main
-#     path: k8s-manifests  # بيشاور على الكود الأصلي بتاعك
-#   destination:
-#     server: https://kubernetes.default.svc
-#     namespace: default
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-simple-nginx-app
+  namespace: argocd
+  # ملحوظة: بنضيف label عشان المدير يعرف عياله
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/fatmaahhmed/argocd.git
+    targetRevision: main
+    path: k8s-manifests  # بيشاور على الكود الأصلي بتاعك
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

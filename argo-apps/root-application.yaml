@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-simple-nginx-app
-  namespace: argocd   
+  name: root-app
+  namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/fatmaahhmed/argocd.git
-    targetRevision: main          
-    path: k8s-manifests
+    targetRevision: main
+    path: argo-apps 
   destination:
     server: https://kubernetes.default.svc
-    namespace: default           
+    namespace: argocd  # <--- برافو عليكي، دي الصح!
   syncPolicy:
     automated:
-      prune: true                
-      selfHeal: true              
+      prune: true
+      selfHeal: true

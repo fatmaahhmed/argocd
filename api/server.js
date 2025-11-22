@@ -12,7 +12,6 @@ app.get('/api/hello', (req, res) => {
     hostname: process.env.HOSTNAME || 'unknown'
   });
 });
-
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);
 });

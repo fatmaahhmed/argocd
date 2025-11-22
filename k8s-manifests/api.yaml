@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-app:ca4d838a85135d276ff993aeae97ef17d698d9e2
+          image: us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-app:e214b4cae73f5f77fffc074d6f602b134cd26d45
           ports:
             - containerPort: 3000
 ---

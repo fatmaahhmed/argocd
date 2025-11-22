@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: us-central1-docker.pkg.dev/moonlit-shadow-469016-h0/my-repo/my-api:latest
+          image: 
           ports:
             - containerPort: 3000
 ---
